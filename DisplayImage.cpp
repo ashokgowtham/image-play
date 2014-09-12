@@ -40,9 +40,11 @@ int main(int argc, char** argv )
         Mat blurred1;
         Mat blurred2;
         Mat diff;
+        Mat powed;
         Mat normalized;
+        Mat added;
         Size ksize;
-        ksize.height=ksize.width=5;
+        ksize.height=ksize.width=3;
         GaussianBlur( image, blurred1, ksize, 0 );
         if(!blurred1.data) {
             printf("blurred1 empty\n");
@@ -60,13 +62,23 @@ int main(int argc, char** argv )
             exit(-1);
         }
 
-        normalize(diff, normalized, 0, (int)b, NORM_MINMAX);
+        pow(diff, 2, powed );
+        if(!powed.data) {
+            printf("powed empty\n");
+            exit(-1);
+        }
+
+        normalize(powed, normalized, 0, (int)b, NORM_MINMAX);
         if(!normalized.data) {
             printf("normalized empty\n");
             exit(-1);
         }
-
-        imshow("Display Image", normalized);
+        add(image,normalized,added);
+        if(!added.data) {
+            printf("added empty\n");
+            exit(-1);
+        }
+        imshow("Display Image", added);
         // cvShowImage("Display Image", frame);
 
         char key = waitKey(10);     //Capture Keyboard stroke
